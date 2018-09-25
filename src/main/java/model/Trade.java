@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Date;
 import java.util.Random;
 
 public class Trade {
@@ -14,11 +15,11 @@ public class Trade {
 	/**
 	 * instructDate
 	 */
-	private String instructDate;
+	private Date instructDate;
 	/**
 	 * intendedSettlementDate
 	 */
-	private String intendedSettlementDate;
+	private Date intendedSettlementDate;
 	/**
 	 * currency
 	 */
@@ -52,8 +53,8 @@ public class Trade {
 	 * @param tradeType
 	 * @param unitPrice
 	 */
-	public Trade(String tradeEntity, String instructDate, 
-			String intendedSettlementDate, String currency, float fxRate,
+	public Trade(String tradeEntity, Date instructDate, 
+			Date intendedSettlementDate, String currency, float fxRate,
 			long units, String tradeType, double unitPrice) {
 		long rand_long = rand.nextLong(); 
 		this.tradeId = rand_long;
@@ -78,12 +79,12 @@ public class Trade {
 	}
 
 
-	public String getInstructDate() {
+	public Date getInstructDate() {
 		return instructDate;
 	}
 
 
-	public String getIntendedSettlementDate() {
+	public Date getIntendedSettlementDate() {
 		return intendedSettlementDate;
 	}
 

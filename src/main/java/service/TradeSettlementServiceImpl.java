@@ -1,7 +1,6 @@
 package service;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -16,11 +15,8 @@ public class TradeSettlementServiceImpl implements ITradeSettlementService{
 	/**
 	 * Calendar instance
 	 */
-	private static Calendar c = Calendar.getInstance();
-	/**
-	 * Simpledateformat instance
-	 */
-	private static SimpleDateFormat format = new SimpleDateFormat(Constants.Date_Pattern);
+	private Calendar c = Calendar.getInstance();
+	
 
 	private double getTotalTradeAmount(double unitPrice, long units, float fxRate) {
 		return unitPrice * units * fxRate;
@@ -30,10 +26,8 @@ public class TradeSettlementServiceImpl implements ITradeSettlementService{
 	 * @param trades - List<SettledTrade>
 	 * @return void
 	 */
-	public void applySettlement(List<SettledTrade> trades) throws ParseException {
-		SettledTrade trade;
-		for(int i=0; i<trades.size(); i++) {
-		trade = trades.get(i);
+	public void applySettlement(List<SettledTrade> trades) throws ParseException {		
+		for(SettledTrade trade : trades) {
 		applyNextDay(trade);
 		trade.setTradeTotalValue(getTotalTradeAmount(trade.getUnitPrice(), trade.getUnits(), trade.getFxRate()));
 		}
@@ -45,19 +39,19 @@ public class TradeSettlementServiceImpl implements ITradeSettlementService{
 	 * @exception ParseException
 	 */
 	private void applyNextDay(SettledTrade trade) throws ParseException {
-		c.setTime(format.parse(trade.getIntendedSettlementDate()));
+		c.setTime(trade.getIntendedSettlementDate());
 		int day = c.get(Calendar.DAY_OF_WEEK);
 		if (day == 1 ){
 			c.add(Calendar.DAY_OF_MONTH, 1);
-			trade.setSettleDate(format.format(c.getTime()));
+			trade.setSettleDate(c.getTime());
 		}else
 			if(day == 7 ){
 				c.add(Calendar.DAY_OF_MONTH, 2);
-				trade.setSettleDate(format.format(c.getTime()));
+				trade.setSettleDate(c.getTime());
 			}else
 			if(day == 6 && (trade.getCurrency()==Constants.CURRENCY_AED || trade.getCurrency()==Constants.CURRENCY_SAR)) {
 				c.add(Calendar.DAY_OF_MONTH, 3);
-				trade.setSettleDate(format.format(c.getTime()));
+				trade.setSettleDate(c.getTime());
 				}
 				else {
 					trade.setSettleDate(trade.getIntendedSettlementDate());

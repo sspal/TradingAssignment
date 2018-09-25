@@ -2,6 +2,7 @@ package service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +28,7 @@ public class TradeConsolidationServiceImpl implements ITradeConsolidationService
 	 */
 	public List<TradeAggregrates> getTradeAggregate(List<SettledTrade> trades) throws Exception {		
 		List<TradeAggregrates> aggregrateList = new ArrayList<TradeAggregrates>();
-		Set<String> setKey = new TreeSet<String>();
+		Set<Date> setKey = new TreeSet<Date>();
 		Iterator<SettledTrade> iterator = trades.iterator();
 		SettledTrade trade;
 		while (iterator.hasNext()) {
@@ -44,9 +45,9 @@ public class TradeConsolidationServiceImpl implements ITradeConsolidationService
 	 * @param setKey - Set<String>
 	 * @return void
 	 */
-	private void getGrossValues(List<TradeAggregrates> aggregrateList, List<SettledTrade> trades, Set<String> setKey) {
+	private void getGrossValues(List<TradeAggregrates> aggregrateList, List<SettledTrade> trades, Set<Date> setKey) {
 		Iterator<SettledTrade> iterator;
-		Iterator<String> setIterator = setKey.iterator();
+		Iterator<Date> setIterator = setKey.iterator();
 		SettledTrade trade;
 		while (setIterator.hasNext()) {
 			TradeAggregrates aggregrate = new TradeAggregrates();					

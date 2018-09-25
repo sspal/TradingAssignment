@@ -1,4 +1,7 @@
 package model.custom;
+
+import java.util.Date;
+
 /**
  * 
  * Class which holds trade settlement 
@@ -6,14 +9,14 @@ package model.custom;
  *
  */
 public class TradeAggregrates {
-	private String settlementDate;
+	private Date settlementDate;
 	private double buyGrossValue;
 	private double sellGrossValue;
 		
-	public String getSettlementDate() {
+	public Date getSettlementDate() {
 		return settlementDate;
 	}
-	public void setSettlementDate(String settlementDate) {
+	public void setSettlementDate(Date settlementDate) {
 		this.settlementDate = settlementDate;
 	}
 	public double getBuyGrossValue() {

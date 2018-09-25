@@ -18,8 +18,8 @@ public class RatingCompare implements Comparator<EntityDetails>
 	 *
 	 */
  	public int compare(EntityDetails ent1, EntityDetails ent2) {
-		 if (ent1.getTradeGrossValue() < ent2.getTradeGrossValue()) return -1; 
-	        if (ent1.getTradeGrossValue() > ent2.getTradeGrossValue()) return 1; 
+		 if (ent1.getTradeGrossValue() < ent2.getTradeGrossValue()) return 1; 
+	        if (ent1.getTradeGrossValue() > ent2.getTradeGrossValue()) return -1; 
 	        else return 0; 
 	} 
 }
