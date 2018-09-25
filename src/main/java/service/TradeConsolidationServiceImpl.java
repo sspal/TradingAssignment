@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import dao.ISettledTradesDao;
+import dao.SettledTradesDaoImpl;
 import model.Constants;
 import model.SettledTrade;
 import model.custom.EntityDetails;
@@ -26,7 +28,10 @@ public class TradeConsolidationServiceImpl implements ITradeConsolidationService
 	 * @param trades - List<SettledTrade>
 	 * @return List<TradeAggregrates>
 	 */
-	public List<TradeAggregrates> getTradeAggregate(List<SettledTrade> trades) throws Exception {		
+	public List<TradeAggregrates> getTradeAggregate() throws Exception {
+		dao = getSettledTradesDao();
+		List<SettledTrade> trades = dao.getSettledTrades();
+		
 		List<TradeAggregrates> aggregrateList = new ArrayList<TradeAggregrates>();
 		Set<Date> setKey = new TreeSet<Date>();
 		Iterator<SettledTrade> iterator = trades.iterator();
@@ -71,7 +76,9 @@ public class TradeConsolidationServiceImpl implements ITradeConsolidationService
 	 * @param trades - List<SettledTrade>
 	 * @return List<EntityDetails>
 	 */
-	public List<EntityDetails> getEntityRanking(List<SettledTrade> trades, String tradeType) throws Exception  {
+	public List<EntityDetails> getEntityRanking(String tradeType) throws Exception  {
+		dao = getSettledTradesDao();
+		List<SettledTrade> trades = dao.getSettledTrades();
 		
 		List<EntityDetails> entityList = new ArrayList<EntityDetails>();
 		Set<String> setKey = new HashSet<String>();
@@ -110,5 +117,22 @@ public class TradeConsolidationServiceImpl implements ITradeConsolidationService
 			}
 		}		
 	}
+	
+	/**
+	 * ISettledTradesDao reference.
+	 */
+	private ISettledTradesDao dao;
+	/**
+	 * ISettledTradesDao instance generation if its null else returns existing instance.
+	 */
+	public ISettledTradesDao getSettledTradesDao() {
+	if(dao == null) {
+		dao = new SettledTradesDaoImpl(); 
+		return dao;
+	}
+	else {
+		return dao;
+	}
+}
 
 }

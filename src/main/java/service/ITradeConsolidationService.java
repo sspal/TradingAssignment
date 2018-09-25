@@ -1,7 +1,6 @@
 package service;
 import java.util.List;
 
-import model.SettledTrade;
 import model.custom.EntityDetails;
 import model.custom.TradeAggregrates;
 
@@ -13,15 +12,15 @@ import model.custom.TradeAggregrates;
 public interface ITradeConsolidationService {
 	/**
 	 * public getTradeAggregate() method for trade aggregrated figure calculation
-	 * @param trades - List<SettledTrade>
+	 * 
 	 * @return List<TradeAggregrates>
 	 */
-	List<TradeAggregrates> getTradeAggregate(List<SettledTrade> trades) throws Exception;
+	List<TradeAggregrates> getTradeAggregate() throws Exception;
 	/**
 	 * public getEntityRanking() method for trade ranking figure calculation
-	 * @param trades - List<SettledTrade>
+	 * @param String - tradeType
 	 * @return List<EntityDetails>
 	 * @throws Exception 
 	 */
-	List<EntityDetails> getEntityRanking(List<SettledTrade> trades, String tradeType) throws Exception;
+	List<EntityDetails> getEntityRanking(String tradeType) throws Exception;
 }

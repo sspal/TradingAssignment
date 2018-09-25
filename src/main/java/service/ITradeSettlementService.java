@@ -15,4 +15,10 @@ public interface ITradeSettlementService {
 	 * @return void
 	 */
 	void applySettlement(List<SettledTrade> trades) throws Exception;
+	/**
+	 * public applySettlement() method for trade settlement
+	 * 
+	 * @return List<SettledTrade> 
+	 */
+	List<SettledTrade>  getSettledTrades() throws Exception;
 }

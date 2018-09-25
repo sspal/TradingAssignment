@@ -18,49 +18,56 @@ import service.TradeSettlementServiceImpl;
  * 
  */
 public class TradeRankController {
-	 
-	public TradeRankController() {
-		service = getConsolidationService();
-		settlementService = getTradeSettlementService();
-	}
-	
+	 	
 	/**
 	 * This method applies settlement on trades.
-	 * @param listTrades - list of trades
+	 * 
 	 * @throws Exception 
 	 */
-		public void getSettledTrades(List<SettledTrade> listTrades) throws Exception {
+		public void SettleTrades(List<SettledTrade> listTrades) throws Exception {
+			settlementService = getTradeSettlementService();
 			settlementService.applySettlement(listTrades);
 		}
-		
+		/**
+		 * This method gets settled trades.
+		 * @param listTrades - list of trades
+		 * @throws Exception 
+		 */
+		public List<SettledTrade> getSettledTrades() throws Exception {
+			settlementService = getTradeSettlementService();
+			return settlementService.getSettledTrades();
+		}
 		/**
 		 * This method gets aggregated figures of trades date wise.
-		 * @param listTrades - list of trades
+		 * 
 		 * @return List<TradeAggregrates> - list of TradeAggregrates
 		 * @throws Exception 
 		 */
-			public List<TradeAggregrates> getTradeAggregrateReport(List<SettledTrade> listTrades) throws Exception {
-				return service.getTradeAggregate(listTrades);
+			public List<TradeAggregrates> getTradeAggregrateReport() throws Exception {
+				service = getConsolidationService();
+				return service.getTradeAggregate();
 			}
 			
 			/**
 			 * This method gets ranking figures of incoming trade entities.
-			 * @param listTrades - list of trades
+			 * 
 			 * @return List<EntityDetails>- list of EntityDetails
 			 * @throws Exception 
 			 */
-				public List<EntityDetails> getIncomingTradeRanking(List<SettledTrade> listTrades) throws Exception {
-					return service.getEntityRanking(listTrades, Constants.TRADE_SELL);
+				public List<EntityDetails> getIncomingTradeRanking() throws Exception {
+					service = getConsolidationService();
+					return service.getEntityRanking(Constants.TRADE_SELL);
 				}
 	
 				/**
 				 * This method gets ranking figures of outgoing trade entities.
-				 * @param listTrades - list of trades
+				 * 
 				 * @return List<EntityDetails>- list of EntityDetails
 				 * @throws Exception 
 				 */
-					public List<EntityDetails> getOutgoingTradeRanking(List<SettledTrade> listTrades) throws Exception {
-						return service.getEntityRanking(listTrades, Constants.TRADE_BUY);
+					public List<EntityDetails> getOutgoingTradeRanking() throws Exception {
+						service = getConsolidationService();
+						return service.getEntityRanking(Constants.TRADE_BUY);
 					}
 		/**
 		 * ITradeConsolidationService reference.

@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
 
+import dao.ISettledTradesDao;
+import dao.SettledTradesDaoImpl;
 import model.Constants;
 import model.SettledTrade;
 /**
@@ -25,11 +27,14 @@ public class TradeSettlementServiceImpl implements ITradeSettlementService{
 	 * public applySettlement() method for trade settlement
 	 * @param trades - List<SettledTrade>
 	 * @return void
+	 * @throws Exception 
 	 */
-	public void applySettlement(List<SettledTrade> trades) throws ParseException {		
+	public void applySettlement(List<SettledTrade> trades) throws Exception {		
+		dao = getSettledTradesDao();
 		for(SettledTrade trade : trades) {
 		applyNextDay(trade);
 		trade.setTradeTotalValue(getTotalTradeAmount(trade.getUnitPrice(), trade.getUnits(), trade.getFxRate()));
+		dao.saveSettledTrades(trades);
 		}
 	}
 	/**
@@ -57,6 +62,27 @@ public class TradeSettlementServiceImpl implements ITradeSettlementService{
 					trade.setSettleDate(trade.getIntendedSettlementDate());
 				}
 		
+	}
+	
+	/**
+	 * ISettledTradesDao reference.
+	 */
+	private ISettledTradesDao dao;
+	/**
+	 * ISettledTradesDao instance generation if its null else returns existing instance.
+	 */
+	public ISettledTradesDao getSettledTradesDao() {
+	if(dao == null) {
+		dao = new SettledTradesDaoImpl(); 
+		return dao;
+	}
+	else {
+		return dao;
+	}
+}
+	public List<SettledTrade> getSettledTrades() throws Exception {
+		dao = getSettledTradesDao();
+		return dao.getSettledTrades();
 	}
 
 }

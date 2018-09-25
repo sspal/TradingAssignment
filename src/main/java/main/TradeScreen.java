@@ -31,19 +31,21 @@ public class TradeScreen {
 		try {			
 			ArrayList<SettledTrade> listTrades = createSampleTrades();				
 			
-			controller.getSettledTrades(listTrades);
+			controller.SettleTrades(listTrades);
 			
-			generateInputReport(listTrades);
+			List<SettledTrade> settledTrades = controller.getSettledTrades();
 			
-			List<TradeAggregrates> aggregrateList = controller.getTradeAggregrateReport(listTrades);
+			generateInputReport(settledTrades);
+			
+			List<TradeAggregrates> aggregrateList = controller.getTradeAggregrateReport();
 			
 			generateAggregrateReport(aggregrateList);
 			
-			List<EntityDetails> buyEntities = controller.getOutgoingTradeRanking(listTrades);
+			List<EntityDetails> buyEntities = controller.getOutgoingTradeRanking();
 			
 			generateBuyEntityReport(buyEntities);
 			
-			List<EntityDetails> sellEntities = controller.getIncomingTradeRanking(listTrades);			
+			List<EntityDetails> sellEntities = controller.getIncomingTradeRanking();			
 		
 			generateSellEntityReport(sellEntities);
 			
@@ -145,7 +147,7 @@ public class TradeScreen {
 	 * This method generates report for all Input trade entities.
 	 * @param listTrades - list of all trades
 	 */
-	private static void generateInputReport(ArrayList<SettledTrade> listTrades) {	
+	private static void generateInputReport(List<SettledTrade> listTrades) {	
 		log.info("Trade Figure Inputs after Applying Settlement ");
 		log.info("Index Entity  Buy/Sell  Intended-SettlementDate  Actual-SettlementDate  Currency  Fx-Rate  Units  Price-per-unit  Trade-Gross ");
 		log.info("--------------------------------------------------------------------------------------------------------------------------------");
