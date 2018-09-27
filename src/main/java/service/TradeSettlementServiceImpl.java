@@ -43,58 +43,47 @@ public class TradeSettlementServiceImpl implements ITradeSettlementService{
 	 * @return void
 	 * @exception ParseException
 	 */
-	private void applyNextDay(SettledTrade trade) throws ParseException {
+	private void applyNextDay(SettledTrade trade) {
 		c.setTime(trade.getIntendedSettlementDate());
-		c.add(Calendar.DAY_OF_MONTH, 2);
+		
 		
 		boolean nonGulfCurrency = checkNonGulfCurrency(trade.getCurrency());
 		
-		int day = c.get(Calendar.DAY_OF_WEEK);
-				
-		switch(day) {
+		int dayInput = c.get(Calendar.DAY_OF_WEEK);
+		int dayDjustment = 0;
+		
+		switch(dayInput) {
 		case 1 : {
-			if(nonGulfCurrency) {
-				c.add(Calendar.DAY_OF_MONTH, 1);				
-			}
+			dayDjustment = (nonGulfCurrency) ? 3 : 2;			
+			break;
+		}
+		case 2 : {
+			dayDjustment = 2;			
+			break;
+		}
+		case 3 : {
+			dayDjustment = 2;			
+			break;
+		}
+		case 4 : {
+			dayDjustment = (nonGulfCurrency) ? 2 : 4;	
+			break;
+		}
+		case 5 : {
+			dayDjustment =  4;	
 			break;
 		}
 		case 6 :  {
-			if(!nonGulfCurrency) {
-				c.add(Calendar.DAY_OF_MONTH, 2);				
-			}
+			dayDjustment =  4;	
 			break;
 		}
 		case 7 :  {
-			
-			c.add(Calendar.DAY_OF_MONTH, ((nonGulfCurrency) ? 2 : 1));
-			//trade.setSettleDate(c.getTime());
+			dayDjustment =  (nonGulfCurrency) ? 4 : 3;
 			break;
-		}
-		default: {
-			//trade.setSettleDate(trade.getIntendedSettlementDate());
-			break;
-		}
+		}		
 	}
-		trade.setSettleDate(c.getTime());
-		
-		
-		
-		/*if (day == 1 && (trade.getCurrency()!=Constants.CURRENCY_AED || trade.getCurrency()!=Constants.CURRENCY_SAR)){
-			c.add(Calendar.DAY_OF_MONTH, 1);
-			trade.setSettleDate(c.getTime());
-		}else
-			if(day == 7 ){
-				c.add(Calendar.DAY_OF_MONTH, 2);
-				trade.setSettleDate(c.getTime());
-			}else
-			if(day == 6 && (trade.getCurrency()==Constants.CURRENCY_AED || trade.getCurrency()==Constants.CURRENCY_SAR)) {
-				c.add(Calendar.DAY_OF_MONTH, 3);
-				trade.setSettleDate(c.getTime());
-				}
-				else {
-					trade.setSettleDate(trade.getIntendedSettlementDate());
-				}*/
-		
+		c.add(Calendar.DAY_OF_MONTH, dayDjustment);
+		trade.setSettleDate(c.getTime());		
 	}
 	
 	private boolean checkNonGulfCurrency(String currency) {

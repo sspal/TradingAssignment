@@ -136,7 +136,7 @@ public class TradeScreen {
 		log.info("                                                                                                ");
 		log.info("                                                                                                ");
 		log.info("Trade Amount Settled Everyday in USD Incoming/Outgoing ");
-		log.info("Settlement-Date   Amount-Incoming    Amount-Outgoing");
+		log.info("Settlement-Date               Amount-Incoming    Amount-Outgoing");
 		log.info("-----------------------------------------------------------------------");
 		Set<Map.Entry<Date, TradeAggregrates>> keys = mapAggregrate.entrySet(); 
 		
