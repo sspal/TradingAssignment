@@ -45,8 +45,41 @@ public class TradeSettlementServiceImpl implements ITradeSettlementService{
 	 */
 	private void applyNextDay(SettledTrade trade) throws ParseException {
 		c.setTime(trade.getIntendedSettlementDate());
+		c.add(Calendar.DAY_OF_MONTH, 2);
+		
+		boolean nonGulfCurrency = checkNonGulfCurrency(trade.getCurrency());
+		
 		int day = c.get(Calendar.DAY_OF_WEEK);
-		if (day == 1 ){
+				
+		switch(day) {
+		case 1 : {
+			if(nonGulfCurrency) {
+				c.add(Calendar.DAY_OF_MONTH, 1);				
+			}
+			break;
+		}
+		case 6 :  {
+			if(!nonGulfCurrency) {
+				c.add(Calendar.DAY_OF_MONTH, 2);				
+			}
+			break;
+		}
+		case 7 :  {
+			
+			c.add(Calendar.DAY_OF_MONTH, ((nonGulfCurrency) ? 2 : 1));
+			//trade.setSettleDate(c.getTime());
+			break;
+		}
+		default: {
+			//trade.setSettleDate(trade.getIntendedSettlementDate());
+			break;
+		}
+	}
+		trade.setSettleDate(c.getTime());
+		
+		
+		
+		/*if (day == 1 && (trade.getCurrency()!=Constants.CURRENCY_AED || trade.getCurrency()!=Constants.CURRENCY_SAR)){
 			c.add(Calendar.DAY_OF_MONTH, 1);
 			trade.setSettleDate(c.getTime());
 		}else
@@ -60,10 +93,14 @@ public class TradeSettlementServiceImpl implements ITradeSettlementService{
 				}
 				else {
 					trade.setSettleDate(trade.getIntendedSettlementDate());
-				}
+				}*/
 		
 	}
 	
+	private boolean checkNonGulfCurrency(String currency) {
+		return (currency != Constants.CURRENCY_AED && currency != Constants.CURRENCY_SAR);
+	}
+
 	/**
 	 * ISettledTradesDao reference.
 	 */

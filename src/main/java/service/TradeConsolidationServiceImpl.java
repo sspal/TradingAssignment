@@ -1,19 +1,15 @@
 package service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 import dao.ISettledTradesDao;
 import dao.SettledTradesDaoImpl;
 import model.Constants;
 import model.SettledTrade;
-import model.custom.EntityDetails;
 import model.custom.TradeAggregrates;
 /**
  * TradeConsolidationServiceImpl Class
@@ -25,97 +21,56 @@ public class TradeConsolidationServiceImpl implements ITradeConsolidationService
 	
 	/**
 	 * public getTradeAggregate() method for trade aggregrated figure calculation
-	 * @param trades - List<SettledTrade>
-	 * @return List<TradeAggregrates>
+	 * 
+	 * @return Map<Date, TradeAggregrates>
 	 */
-	public List<TradeAggregrates> getTradeAggregate() throws Exception {
+	public Map<Date, TradeAggregrates> getTradeAggregate() throws Exception {
 		dao = getSettledTradesDao();
-		List<SettledTrade> trades = dao.getSettledTrades();
-		
-		List<TradeAggregrates> aggregrateList = new ArrayList<TradeAggregrates>();
-		Set<Date> setKey = new TreeSet<Date>();
-		Iterator<SettledTrade> iterator = trades.iterator();
-		SettledTrade trade;
-		while (iterator.hasNext()) {
-			trade = iterator.next();			
-			setKey.add(trade.getSettleDate());
-		}		
-		getGrossValues(aggregrateList, trades, setKey);				
-		return aggregrateList;
-	}
-	/**
-	 * private getGrossValues() method for trade aggregrated figure calculation
-	 * @param trades - List<SettledTrade>
-	 * @param aggregrateList - List<TradeAggregrates>
-	 * @param setKey - Set<String>
-	 * @return void
-	 */
-	private void getGrossValues(List<TradeAggregrates> aggregrateList, List<SettledTrade> trades, Set<Date> setKey) {
-		Iterator<SettledTrade> iterator;
-		Iterator<Date> setIterator = setKey.iterator();
-		SettledTrade trade;
-		while (setIterator.hasNext()) {
-			TradeAggregrates aggregrate = new TradeAggregrates();					
-			aggregrate.setSettlementDate(setIterator.next());			
-			aggregrateList.add(aggregrate);	
-			iterator = trades.iterator();
-			while(iterator.hasNext()) {				
-			trade = iterator.next();
-			if(aggregrate.getSettlementDate().equals(trade.getSettleDate())) 
-			{
-				if(trade.getTradeType().equals(Constants.TRADE_BUY))
-					aggregrate.setBuyGrossValue(aggregrate.getBuyGrossValue() + trade.getTradeTotalValue());
-				else
-					aggregrate.setSellGrossValue(aggregrate.getSellGrossValue() + trade.getTradeTotalValue());							
-			}			
-		  }		
+		List<SettledTrade> trades = dao.getSettledTrades();		
+		Map<Date, TradeAggregrates> mapAggregrate = new TreeMap<Date, TradeAggregrates>();
+		TradeAggregrates aggregrate = null;		
+		for(SettledTrade trade : trades) {
+			aggregrate = mapAggregrate.get(trade.getSettleDate());			
+			if(aggregrate == null) {
+				aggregrate = new TradeAggregrates();
+			}
+			
+			if(trade.getTradeType().equals(Constants.TRADE_BUY))
+				aggregrate.setBuyGrossValue(aggregrate.getBuyGrossValue() + trade.getTradeTotalValue());
+			else
+				aggregrate.setSellGrossValue(aggregrate.getSellGrossValue() + trade.getTradeTotalValue());
+			
+			mapAggregrate.put(trade.getSettleDate(), aggregrate);
+		}					
+		return mapAggregrate;
 		}
-	}
+		
+		
+	
 	/**
 	 * public getEntityRanking() method for trade ranking figure calculation
 	 * @param trades - List<SettledTrade>
-	 * @return List<EntityDetails>
+	 * @return Map<String, Double>
 	 */
-	public List<EntityDetails> getEntityRanking(String tradeType) throws Exception  {
+	public Map<String, Double> getEntityRanking(String tradeType) throws Exception  {
 		dao = getSettledTradesDao();
 		List<SettledTrade> trades = dao.getSettledTrades();
 		
-		List<EntityDetails> entityList = new ArrayList<EntityDetails>();
-		Set<String> setKey = new HashSet<String>();
-		Iterator<SettledTrade> iterator = trades.iterator();
-		SettledTrade trade;
-		while (iterator.hasNext()) {
-			trade = iterator.next();
-			if(trade.getTradeType().equals(tradeType))
-			setKey.add(trade.getTradeEntity());
-		}		
-		getEntityGross(entityList, trades, setKey, tradeType);
-		RatingCompare ratingCompare = new RatingCompare(); 
-		Collections.sort(entityList, ratingCompare);
-		return entityList;
-	}
-	/**
-	 * private getEntityGross() method for trade ranking figure calculation
-	 * @param trades - List<SettledTrade>
-	 * @param aggregrateList - List<TradeAggregrates>
-	 * @param setKey - Set<String>
-	 * @return void
-	 */
-	private void getEntityGross(List<EntityDetails> entityList, List<SettledTrade> trades, Set<String> setKey, String tradeType) {
-		Iterator<SettledTrade> iterator;
-		Iterator<String> setIterator = setKey.iterator();
-		SettledTrade trade;
-		while(setIterator.hasNext()) {
-			EntityDetails entity = new EntityDetails();
-			entity.setEntityName(setIterator.next());
-			entityList.add(entity);
-			iterator = trades.iterator();
-			while(iterator.hasNext()) {				
-			trade = iterator.next();
-			if(entity.getEntityName().equals(trade.getTradeEntity()) && trade.getTradeType().equals(tradeType)) 
-				entity.setTradeGrossValue(entity.getTradeGrossValue()+trade.getTradeTotalValue());
+		HashMap<String, Double> entityMap = new HashMap<String, Double>();
+		Double value = 0.0;
+		for(SettledTrade trade : trades) {
+			if(trade.getTradeType().equals(tradeType)) {
+			value = entityMap.get(trade.getTradeEntity());
+			value = (value != null) ? value : 0.0;
+			entityMap.put(trade.getTradeEntity(), (value + trade.getTradeTotalValue()));
 			}
-		}		
+		}
+		
+		RatingCompare comp = new RatingCompare(entityMap);
+		Map<String, Double> sortedEntities = new TreeMap<String, Double>(comp);
+		sortedEntities.putAll(entityMap);
+		entityMap = null;
+		return sortedEntities;
 	}
 	
 	/**

@@ -1,10 +1,11 @@
 package controller;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import model.Constants;
 import model.SettledTrade;
-import model.custom.EntityDetails;
 import model.custom.TradeAggregrates;
 import service.ITradeConsolidationService;
 import service.ITradeSettlementService;
@@ -40,10 +41,10 @@ public class TradeRankController {
 		/**
 		 * This method gets aggregated figures of trades date wise.
 		 * 
-		 * @return List<TradeAggregrates> - list of TradeAggregrates
+		 * @return Map<Date, TradeAggregrates> mapAggregrate - maps of date, TradeAggregrates
 		 * @throws Exception 
 		 */
-			public List<TradeAggregrates> getTradeAggregrateReport() throws Exception {
+			public Map<Date, TradeAggregrates> getTradeAggregrateReport() throws Exception {
 				service = getConsolidationService();
 				return service.getTradeAggregate();
 			}
@@ -51,10 +52,10 @@ public class TradeRankController {
 			/**
 			 * This method gets ranking figures of incoming trade entities.
 			 * 
-			 * @return List<EntityDetails>- list of EntityDetails
+			 * @return Map<String, Double>- map of string, double
 			 * @throws Exception 
 			 */
-				public List<EntityDetails> getIncomingTradeRanking() throws Exception {
+				public Map<String, Double> getIncomingTradeRanking() throws Exception {
 					service = getConsolidationService();
 					return service.getEntityRanking(Constants.TRADE_SELL);
 				}
@@ -62,10 +63,10 @@ public class TradeRankController {
 				/**
 				 * This method gets ranking figures of outgoing trade entities.
 				 * 
-				 * @return List<EntityDetails>- list of EntityDetails
+				 * @return Map<String, Double>
 				 * @throws Exception 
 				 */
-					public List<EntityDetails> getOutgoingTradeRanking() throws Exception {
+					public Map<String, Double> getOutgoingTradeRanking() throws Exception {
 						service = getConsolidationService();
 						return service.getEntityRanking(Constants.TRADE_BUY);
 					}

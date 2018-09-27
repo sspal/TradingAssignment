@@ -1,25 +1,28 @@
 package service;
 
 import java.util.Comparator;
-
-import model.custom.EntityDetails;
+import java.util.HashMap;
 /**
  * 
- * class that implments comparator to sort EntityDetails
+ * class that implements comparator to sort EntityDetails
  * sorting by TradeGrossValue
  *
  */
-public class RatingCompare implements Comparator<EntityDetails> 
+public class RatingCompare implements  Comparator<Object> 
 { 
+	
+	 
+		HashMap<String, Double> map;
+	    public RatingCompare(HashMap<String, Double> map) {
+	        this.map = map;
+	    }
 	/**
 	 * 
 	 * overriden compare method that to sort EntityDetails
 	 * sorting by TradeGrossValue
-	 *
 	 */
- 	public int compare(EntityDetails ent1, EntityDetails ent2) {
-		 if (ent1.getTradeGrossValue() < ent2.getTradeGrossValue()) return 1; 
-	        if (ent1.getTradeGrossValue() > ent2.getTradeGrossValue()) return -1; 
-	        else return 0; 
-	} 
+	
+    public int compare(Object o1, Object o2) {
+        return ((Double) map.get(o2)).compareTo((Double) map.get(o1));
+    }
 }

@@ -5,13 +5,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
 import controller.TradeRankController;
 import model.Constants;
 import model.SettledTrade;
-import model.custom.EntityDetails;
 import model.custom.TradeAggregrates;
 
 /**
@@ -37,15 +38,15 @@ public class TradeScreen {
 			
 			generateInputReport(settledTrades);
 			
-			List<TradeAggregrates> aggregrateList = controller.getTradeAggregrateReport();
+			Map<Date, TradeAggregrates> mapAggregrate = controller.getTradeAggregrateReport();
 			
-			generateAggregrateReport(aggregrateList);
+			generateAggregrateReport(mapAggregrate);
 			
-			List<EntityDetails> buyEntities = controller.getOutgoingTradeRanking();
+			Map<String, Double> buyEntities = controller.getOutgoingTradeRanking();
 			
 			generateBuyEntityReport(buyEntities);
 			
-			List<EntityDetails> sellEntities = controller.getIncomingTradeRanking();			
+			Map<String, Double> sellEntities = controller.getIncomingTradeRanking();			
 		
 			generateSellEntityReport(sellEntities);
 			
@@ -93,18 +94,18 @@ public class TradeScreen {
 	 * This method generates Incoming trades report.
 	 * @param sellEntities - list of consolidated entities sell figure
 	 */
-	private static void generateSellEntityReport(List<EntityDetails> sellEntities) {
-		int counter;
+	private static void generateSellEntityReport(Map<String, Double> sellEntities) {
+		int counter = 0;
 		log.info("                                                                                                ");
 		log.info("                                                                                                ");
 		log.info("Ranking Entities for Incoming based on Total Traded Amount in USD ");
 		log.info("Rank   Entity-Name    Total-Amount-Incoming");
 		log.info("-----------------------------------------------------------------------");
-		for(int i=0; i<sellEntities.size(); i++) {
-			counter = i;
+		
+		Set<Map.Entry<String, Double>> mapSets = sellEntities.entrySet(); 		
+		for(Map.Entry<String, Double> it: mapSets) {
 			counter++;
-			EntityDetails entitySell = sellEntities.get(i);
-			log.info(counter+"        "+entitySell.getEntityName()+"             "+entitySell.getTradeGrossValue());
+			log.info(counter+"        "+it.getKey()+"             "+it.getValue());
 		}
 		log.info("-----------------------------------------------------------------------");
 	}
@@ -112,34 +113,36 @@ public class TradeScreen {
 	 * This method generates Outgoing trades report.
 	 * @param buyEntities - list of consolidated entities buy figure
 	 */
-	private static void generateBuyEntityReport(List<EntityDetails> buyEntities) {
-		int counter;
+	private static void generateBuyEntityReport(Map<String, Double> buyEntities) {
+		int counter = 0;
 		log.info("                                                                                                ");
 		log.info("                                                                                                ");
 		log.info("Ranking Entities for Outgoing based on Total Traded Amount in USD ");
 		log.info("Rank   Entity-Name    Total-Amount-Outgoing");
 		log.info("-----------------------------------------------------------------------");
-		for(int i=0; i<buyEntities.size(); i++) {
-			counter = i;
+				
+		Set<Map.Entry<String, Double>> mapSets = buyEntities.entrySet(); 		
+		for(Map.Entry<String, Double> it: mapSets) {
 			counter++;
-			EntityDetails entityBuy = buyEntities.get(i);
-			log.info(counter+"        "+entityBuy.getEntityName()+"             "+entityBuy.getTradeGrossValue());
+			log.info(counter+"        "+it.getKey()+"             "+it.getValue());
 		}
 		log.info("-----------------------------------------------------------------------");
 	}
 	/**
 	 * This method generates report for everyday basis Gross Incoming/Outgoing figures.
-	 * @param aggregrateList - list of consolidated trade Aggregrates
+	 * @param mapAggregrate - list of consolidated trade Aggregrates
 	 */
-	private static void generateAggregrateReport(List<TradeAggregrates> aggregrateList) {
+	private static void generateAggregrateReport(Map<Date, TradeAggregrates> mapAggregrate) {
 		log.info("                                                                                                ");
 		log.info("                                                                                                ");
 		log.info("Trade Amount Settled Everyday in USD Incoming/Outgoing ");
 		log.info("Settlement-Date   Amount-Incoming    Amount-Outgoing");
 		log.info("-----------------------------------------------------------------------");
-		for(int i=0; i<aggregrateList.size(); i++) {
-		 TradeAggregrates aggregrate = aggregrateList.get(i);
-		 log.info(aggregrate.getSettlementDate()+"         "+aggregrate.getSellGrossValue()+"         "+aggregrate.getBuyGrossValue());
+		Set<Map.Entry<Date, TradeAggregrates>> keys = mapAggregrate.entrySet(); 
+		
+		for(Map.Entry<Date, TradeAggregrates> it: keys) {
+		 TradeAggregrates aggregrate = it.getValue();
+		 log.info(it.getKey()+"         "+aggregrate.getSellGrossValue()+"         "+aggregrate.getBuyGrossValue());
 		}
 		log.info("-----------------------------------------------------------------------");
 	}
