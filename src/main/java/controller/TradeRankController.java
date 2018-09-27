@@ -64,7 +64,7 @@ public class TradeRankController {
 				 * This method gets ranking figures of outgoing trade entities.
 				 * 
 				 * @return Map<String, Double>
-				 * @throws Exception 
+				 * @throws Exception  -
 				 */
 					public Map<String, Double> getOutgoingTradeRanking() throws Exception {
 						service = getConsolidationService();
